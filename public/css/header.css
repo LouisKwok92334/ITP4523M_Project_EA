@@ -1,0 +1,43 @@
+header {
+    margin: 20px;
+}
+.header-display {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.company-name {
+    font-size: 20px;
+}
+.user-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.user-name {
+    padding: 10px;
+    width: 100px;
+    height: 20px;
+    border: 1px solid #aeaeae;
+    border-radius: 40px;
+}
+.user-icon {
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #aeaeae;
+    border-radius: 999em;
+    margin: 0 20px;
+}
+.user-logout {
+    padding: 10px 15px;
+    font-size: 15px;
+    border: 1px solid #aeaeae;
+    border-radius: 40px;
+    cursor: pointer;
+    background-color: white;
+}
+.user-logout:hover {
+    background-color: #e6e6e6;
+}
