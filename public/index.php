@@ -1,27 +1,42 @@
+<?php
+  session_start();
+
+  if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+      // User is not logged in. Redirect them to the login page
+      header('Location: login.php');
+      exit;
+  }
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Purchase Manager</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script src="js/script.js"></script>
+    <title>Supply Management System</title>
+    <!-- Add your CSS file here -->
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
-    <header>
-        <h1>Welcome to Purchase Manager</h1>
-    </header>
-    
     <nav>
         <ul>
-            <li><a href="orders/make_order.php">Make Order</a></li>
-            <li><a href="orders/view_order.php">View Order Records</a></li>
-            <li><a href="manager_info/update_info.php">Update Manager Information</a></li>
-            <li><a href="delete/delete_order.php">Delete Order Record</a></li>
+            <?php
+              if ($_SESSION['role'] === 'purchase_manager') {
+                echo '<li><a href="manager_info/make_order.php">Make Order</a></li>';
+                echo '<li><a href="manager_info/view_order.php">View Order</a></li>';
+                echo '<li><a href="manager_info/update_info.php">Update Information</a></li>';
+                echo '<li><a href="manager_info/delete_order.php">Delete Order</a></li>';
+              } elseif ($_SESSION['role'] === 'supplier') {
+                echo '<li><a href="supplier/insert_item.php">Insert Item</a></li>';
+                echo '<li><a href="supplier/edit_item.php">Edit Item</a></li>';
+                echo '<li><a href="supplier/generate_report.php">Generate Report</a></li>';
+                echo '<li><a href="supplier/delete_item.php">Delete Item</a></li>';
+              }
+            ?>
         </ul>
     </nav>
-
-    <!-- Possible place for login / register -->
-    <!-- login -->
-    <!-- register -->
+    
+    <h1>Welcome to the Supply Management System</h1>
+    <p>This is a system for managing orders and supplies.</p>
+    
+    <a href="logout.php">Logout</a>
 </body>
 </html>
