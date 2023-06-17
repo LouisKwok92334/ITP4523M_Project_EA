@@ -1,93 +1,66 @@
 <?php
-include '../../includes/auth.php';
+    include '../includes/auth.php';
+    require_once("../connection/mysqli_conn.php");
 
-// Database connection
-// assuming that you have already configured these values
-$host = 'localhost';
-$db   = 'ProjectDB';
-$user = 'root';
-$pass = '';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-try {
-    $pdo = new PDO($dsn, $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (\PDOException $e) {
-    throw new \PDOException($e->getMessage(), (int)$e->getCode());
-}
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Start a transaction
-    $pdo->beginTransaction();
-
-    try {
-        // Generate an Order ID
-        $stmt = $pdo->prepare('SELECT MAX(orderID) AS max FROM Orders');
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $order_id = $row['max'] + 1;
-
-        // Insert a new row into the Orders table
-        $stmt = $pdo->prepare('INSERT INTO Orders (orderID, purchaseManagerID, orderDateTime, deliveryAddress, deliveryDate) VALUES (?, ?, NOW(), ?, ?)');
-        $stmt->execute([$order_id, $_POST['purchaseManagerID'], $_POST['deliveryAddress'], $_POST['deliveryDate']]);
-
-        // For each selected product, insert a row into the OrderDetails table and update the stock
-        $total_amount = 0;
-        foreach ($_POST['orderQty'] as $product_id => $orderQty) {
-            if ($orderQty > 0) {
-                // Get the product info
-                $stmt = $pdo->prepare('SELECT * FROM Item WHERE itemID = ?');
-                $stmt->execute([$product_id]);
-                $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // Insert a row into the OrdersItem table
-                $stmt = $pdo->prepare('INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES (?, ?, ?, ?)');
-                $stmt->execute([$order_id, $product['itemID'], $orderQty, $product['price']]);
-
-                // Update the stock
-                $stmt = $pdo->prepare('UPDATE Item SET stockItemQty = stockItemQty - ? WHERE itemID = ?');
-                $stmt->execute([$orderQty, $product['itemID']]);
-
-                // Add to the total order amount
-                $total_amount += $orderQty * $product['price'];
-            }
-        }
-
-        // Commit the transaction
-        $pdo->commit();
-
-        echo "Order placed successfully!";
-    } catch (\PDOException $e) {
-        // Roll back the transaction if anything goes wrong
-        $pdo->rollBack();
-        echo "Error: " . $e->getMessage();
-    }
-}
+    // fetch the available products
+    $result = mysqli_query($conn, "SELECT * FROM Item WHERE stockItemQty > 0 ORDER BY itemName ASC");
+    $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>New Order</title>
+    <style>
+        /* Some basic CSS for table formatting */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
 </head>
 <body>
-<form action="make_order.php" method="post">
-    <label for="purchaseManagerID">Purchase Manager ID:</label><br>
-    <input type="number" id="purchaseManagerID" name="purchaseManagerID"><br>
-    <label for="deliveryAddress">Delivery Address:</label><br>
-    <input type="text" id="deliveryAddress" name="deliveryAddress"><br>
-    <label for="deliveryDate">Delivery Date:</label><br>
-    <input type="date" id="deliveryDate" name="deliveryDate"><br>
-    
-    <!-- You should generate these fields dynamically based on the products in your database -->
-    <label for="product1">Product 1:</label><br>
-    <input type="number" id="product1" name="orderQty[1]"><br>
-    <label for="product2">Product 2:</label><br>
-    <input type="number" id="product2" name="orderQty[2]"><br>
-    <!-- ... -->
-    
-    <input type="submit" value="Submit">
-</form>
+    <form action="order_process.php" method="POST">
+        <!-- Assume that managerName and purchaseManagerID come from the logged-in user -->
+        <input type="hidden" name="purchaseManagerID" value="<?php echo $_SESSION['purchaseManagerID']; ?>">
+        <input type="hidden" name="managerName" value="<?php echo $_SESSION['managerName']; ?>">
+        <label for="deliveryAddress">Delivery Address:</label>
+        <input type="text" id="deliveryAddress" name="deliveryAddress" required><br>
+        <label for="deliveryDate">Delivery Date:</label>
+        <input type="date" id="deliveryDate" name="deliveryDate" required><br>
+        <label for="itemID">Item:</label>
+        <select id="itemID" name="itemID" required>
+            <?php foreach($products as $product): ?>
+                <option value="<?php echo $product['itemID']; ?>"><?php echo $product['itemName']; ?></option>
+            <?php endforeach; ?>
+        </select><br>
+        <label for="orderQty">Quantity:</label>
+        <input type="number" id="orderQty" name="orderQty" min="1" required><br>
+        <input type="submit" value="Place Order">
+    </form>
+    <h2>Available Products:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>In Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($products as $product): ?>
+            <tr>
+                <td><img src="<?php echo '../images/' . $product['itemImage']; ?>" alt="<?php echo $product['itemName']; ?>" width="100"></td>
+                <td><?php echo $product['itemName']; ?></td>
+                <td><?php echo $product['itemPrice']; ?></td>
+                <td><?php echo $product['stockItemQty']; ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </body>
 </html>

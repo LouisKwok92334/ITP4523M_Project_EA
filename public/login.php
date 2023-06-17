@@ -2,27 +2,15 @@
   session_start();
 
   // Database connection
-  $host = 'localhost';
-  $db   = 'ProjectDB';
-  $user = 'root'; // replace with your MySQL username
-  $pass = '';     // replace with your MySQL password
-  $charset = 'utf8mb4';
-
-  $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-  try {
-     $pdo = new PDO($dsn, $user, $pass);
-  } catch (\PDOException $e) {
-     throw new \PDOException($e->getMessage(), (int)$e->getCode());
-  }
+  require_once("connection/mysqli_conn.php");
 
   if (isset($_POST['username'], $_POST['password'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
 
     // Check if user is a supplier
-    $stmt = $pdo->prepare('SELECT * FROM Supplier WHERE supplierID = ? AND password = ?');
-    $stmt->execute([$username, $password]);
-    $user = $stmt->fetch();
+    $result = mysqli_query($conn, "SELECT * FROM Supplier WHERE supplierID = '$username' AND password = '$password'");
+    $user = mysqli_fetch_assoc($result);
 
     if ($user) {
       $_SESSION['loggedin'] = true;
@@ -31,13 +19,15 @@
       exit;
     } else {
       // Check if user is a purchase manager
-      $stmt = $pdo->prepare('SELECT * FROM PurchaseManager WHERE purchaseManagerID = ? AND password = ?');
-      $stmt->execute([$username, $password]);
-      $user = $stmt->fetch();
+      $result = mysqli_query($conn, "SELECT * FROM PurchaseManager WHERE purchaseManagerID = '$username' AND password = '$password'");
+      $user = mysqli_fetch_assoc($result);
 
       if ($user) {
         $_SESSION['loggedin'] = true;
         $_SESSION['role'] = 'purchase_manager';
+        // Store the Purchase Manager's ID and Name in the session
+        $_SESSION['purchaseManagerID'] = $user['purchaseManagerID'];  // replace with the actual column name in your DB
+        $_SESSION['managerName'] = $user['managerName'];  // replace with the actual column name in your DB
         header('Location: index.php');
         exit;
       } else {
@@ -47,7 +37,6 @@
     }
   }
 ?>
-
 
 <!DOCTYPE html>
 <html>
