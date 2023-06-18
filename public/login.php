@@ -66,6 +66,7 @@
   <script src="https://kit.fontawesome.com/22b529d74e.js" crossorigin="anonymous"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/login.css" />
+  <link rel="stylesheet" type="text/css" href="css/navbar.css">
 </head>
 <body>
   <div class="wrapper">
@@ -122,6 +123,7 @@
       </form>
     </div>
   </div>
+  <?php include 'includes/footer.php'; ?>
   <script src="js/login.js"></script>
 </body>
 </html>
