@@ -12,11 +12,15 @@
 <html>
 <head>
     <title>Supply Management System</title>
-    <!-- Add your CSS file here -->
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
 </head>
 <body>
-    <nav>
+    <div class="toggle-btn" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    <nav id="sidebar">
         <ul>
             <?php
               if ($_SESSION['role'] === 'purchase_manager') {
@@ -33,10 +37,18 @@
             ?>
         </ul>
     </nav>
-    
-    <h1>Welcome to the Supply Management System</h1>
-    <p>This is a system for managing orders and supplies.</p>
-    
-    <a href="logout.php">Logout</a>
+
+    <div class="page-content-wrapper">
+        <h1>Welcome to the Yummy Restaurant Management System</h1>
+        <p>This is a system for managing orders and supplies.</p>
+        <a href="logout.php">Logout</a>
+    </div>
+
+    <script>
+        function toggleSidebar(){
+           document.getElementById("sidebar").classList.toggle('active');
+           document.querySelector(".page-content-wrapper").classList.toggle('move-content');
+        }
+    </script>
 </body>
 </html>
