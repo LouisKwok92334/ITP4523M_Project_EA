@@ -16,12 +16,12 @@ body, html {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    width: 50%;
+    width: 60%;
   }
   
   .logo {
     position: absolute;
-    left: 40%;
+    left: 42%;
     top: 50%;
     width: 30vw;
     min-width: 100px; 

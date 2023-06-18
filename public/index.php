@@ -11,16 +11,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Supply Management System</title>
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supply Management System</title>
+  <script src="https://kit.fontawesome.com/22b529d74e.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/navbar.css">
 </head>
 <body>
-    <div class="toggle-btn" onclick="toggleSidebar()">
-        <span></span>
-        <span></span>
-        <span></span>
-    </div>
-    <nav id="sidebar">
+    <nav>
         <ul>
             <?php
               if ($_SESSION['role'] === 'purchase_manager') {
@@ -37,18 +37,11 @@
             ?>
         </ul>
     </nav>
-
-    <div class="page-content-wrapper">
-        <h1>Welcome to the Yummy Restaurant Management System</h1>
-        <p>This is a system for managing orders and supplies.</p>
-        <a href="logout.php">Logout</a>
-    </div>
-
-    <script>
-        function toggleSidebar(){
-           document.getElementById("sidebar").classList.toggle('active');
-           document.querySelector(".page-content-wrapper").classList.toggle('move-content');
-        }
-    </script>
+    
+    <h1>Welcome to the Supply Management System</h1>
+    <p>This is a system for managing orders and supplies.</p>
+    
+    <a href="logout.php">Logout</a>
+    <script src="js/navbar.js"></script>
 </body>
 </html>
