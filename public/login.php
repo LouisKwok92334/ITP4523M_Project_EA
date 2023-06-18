@@ -4,6 +4,15 @@
   // Database connection
   require_once("connection/mysqli_conn.php");
 
+  $messageType = '';
+  $messageContent = '';
+
+  if (isset($_COOKIE['username'])) {
+    $remembered_username = $_COOKIE['username'];
+  } else {
+    $remembered_username = '';
+  }
+
   if (isset($_POST['username'], $_POST['password'])) {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
@@ -25,14 +34,24 @@
       if ($user) {
         $_SESSION['loggedin'] = true;
         $_SESSION['role'] = 'purchase_manager';
-        // Store the Purchase Manager's ID and Name in the session
-        $_SESSION['purchaseManagerID'] = $user['purchaseManagerID'];  // replace with the actual column name in your DB
-        $_SESSION['managerName'] = $user['managerName'];  // replace with the actual column name in your DB
-        header('Location: index.php');
+        $_SESSION['purchaseManagerID'] = $user['purchaseManagerID'];
+        $_SESSION['managerName'] = $user['managerName'];
+    
+        if (isset($_POST['remember'])) {
+            setcookie('username', $username, time() + 60 * 60 * 24 * 30);
+        }
+        
+        $_SESSION['messageType'] = 'success';
+        $_SESSION['messageContent'] = 'Welcome Yummy Restaurant ^__^';
+        
+        $_SESSION['shouldRedirect'] = true;  // Set the flag
+    
+        header('Location: login.php');
         exit;
-      } else {
-        // Incorrect login
-        echo "Incorrect username or password!";
+    } else {
+          // Incorrect login
+          $_SESSION['messageType'] = 'error';
+          $_SESSION['messageContent'] = 'Incorrect username or password';
       }
     }
   }
@@ -43,18 +62,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" type="text/css" href="css/login.css" />
+  <title>Login</title>
+  <script src="https://kit.fontawesome.com/22b529d74e.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/login.css" />
 </head>
 <body>
-    <form action="login.php" method="post">
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br>
-        <input type="submit" value="Login">
-    </form>
+  <div class="wrapper">
+    <div class="restaurant-bg"></div>
+    <img src="./images/Logo.png" class="logo" alt="Logo">
+    <div class="login-form">
+      <form action="login.php" method="post">
+        <div class="login-display">
+          <div>
+            <div class="title">Yummy <span class="highlight">Restaurant</span> Group</div>
+          </div>
+          <div>
+            <div class="subtitle">Please log in for an account</div>
+            <label for="username" class="label-blue">Username:</label>
+            <input type="text" id="username" name="username" class="rounded-input" required value="<?php echo htmlspecialchars($remembered_username); ?>">
+            <label for="password" class="label-blue">Password:</label>
+            <input type="password" id="password" name="password" class="rounded-input" required>
+            <div class="remember-display">
+              <input type="checkbox" name="remember" class="remember">
+              <span class="remember">Remember me</span>
+              <span class="forgot">Forgot password?</span>
+            </div>
+            <div id="login_message">
+                <?php 
+                if (isset($_SESSION['messageType']) && $_SESSION['messageType'] === 'error'): ?>
+                <div class="error_display">
+                    <img class="error_icon" src="https://mweb-cdn.karousell.com/build/alert-error-2kjjYk_Edi.svg" title="">
+                    <span class="massage"><?php echo htmlspecialchars($_SESSION['messageContent']); ?></span>
+                </div>
+                <?php 
+                elseif (isset($_SESSION['messageType']) && $_SESSION['messageType'] === 'success'): ?>
+                <div class="success_display">
+                    <i class="success_icon fa-solid fa-circle-check"></i>
+                    <span class="massage"><?php echo htmlspecialchars($_SESSION['messageContent']); ?></span>
+                </div>
+                <script>
+                  setTimeout(function() {
+                      window.location.href = 'index.php';
+                  }, 2000);  // Redirect after 2 seconds
+                </script>
+                <?php 
+                endif;
+
+                // Remove the message from the session
+                unset($_SESSION['messageType']);
+                unset($_SESSION['messageContent']);
+                ?>
+            </div>
+            <div>
+               <input type="submit" class="login" value="Login">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="js/login.js"></script>
 </body>
 </html>
-
-

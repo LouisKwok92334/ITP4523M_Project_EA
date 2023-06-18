@@ -1,3 +1,145 @@
-body {
-    background-color: black;
-}
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Roboto', 'Arial', sans-serif;
+  }
+  
+  .wrapper {
+    display: flex;
+    height: 100%;
+  }
+  
+  .restaurant-bg {
+    background: url('../images/restaurants.jpg') no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    width: 50%;
+  }
+  
+  .logo {
+    position: absolute;
+    left: 40%;
+    top: 50%;
+    width: 30vw;
+    min-width: 100px; 
+    object-fit: contain;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+  
+  .login-form {
+    background: #fff;
+    width: 60%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title {
+    font-size: 2em;  
+    font-weight: bold;  
+    margin-bottom: 10px;  
+  }
+  
+  .highlight {
+    color: rgb(92, 92, 253);  
+  }
+  
+  .subtitle {
+    font-size: 0.8em;  
+    margin-bottom: 20px;  
+  }
+  
+  .label-blue {
+    color: rgb(92, 92, 253);  
+    font-weight: bold;  
+    display: block;  
+    margin-top: 10px;
+  }
+  
+  .rounded-input {
+    border-radius: 12px;  
+    border: 1px solid #ccc;  
+    padding: 8px 20px;
+    display: block; 
+    margin-bottom: 10px;
+  }
+
+  .remember-display {
+    display: flex;
+    align-items: center;
+  }
+
+  .remember {
+    font-weight: bold;
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  .forgot {
+    font-weight: bold;
+    color: rgb(92, 92, 253);  
+    font-size: 10px;
+    margin-left: 20px;
+    cursor: pointer;
+  }
+
+  .error-message {
+    color: rgb(255, 50, 50);
+  }
+
+  .login {
+    background-color: rgb(92, 92, 253);
+    padding: 10px 20px;
+    border-radius: 15px;
+    border: none;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .login:hover {
+    background-color: rgb(126, 126, 253);
+  }
+
+  .error_display {
+    background-color: #ffd4d7;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 5px;
+  }
+
+    .error_icon {
+        height: 16px;
+        width: 16px;
+        margin-right: 5px;
+    }
+
+    .massage {
+        font-size: 12px;
+    }
+
+    .success_display {
+        background-color: #cfffa7;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+    .success_icon {
+        font-size: 16px;
+        margin-right: 5px;
+    }
