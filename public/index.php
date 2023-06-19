@@ -1,11 +1,5 @@
 <?php
-  session_start();
-
-  if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-      // User is not logged in. Redirect them to the login page
-      header('Location: login.php');
-      exit;
-  }
+  include './includes/auth.php';
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +18,6 @@
   <section>
       <h1>Welcome to the Yummy Restaurant Management System</h1>
       <p>This is a system for managing orders and supplies.</p>
-      <a href="logout.php">Logout</a>
   </section>
   <?php include 'includes/footer.php'; ?>
   <script src="./js/navbar.js"></script>

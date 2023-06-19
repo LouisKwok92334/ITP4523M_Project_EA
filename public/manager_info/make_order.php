@@ -11,7 +11,6 @@
     $sql = "SELECT itemID, supplierID, itemName, ImageFile, itemDescription, stockItemQty, price FROM Item WHERE stockItemQty > 0";
     $result = $conn->query($sql);
 
-    $reviewOrder = false;
     $orderDetails = [];
     $message = "";
 
@@ -23,8 +22,6 @@
 
             // Add the item to the shopping cart
             $_SESSION['cart'][$itemID] = $orderQty;
-
-            $message = "Item added to cart!";
         }
         elseif(isset($_POST['updateQty'])) {
             $itemID = $_POST['updateItemID'];
@@ -32,9 +29,6 @@
     
             // Update the quantity in the shopping cart
             $_SESSION['cart'][$itemID] = $newQty;
-    
-            // Update message
-            $message = "Item quantity updated!";
         }
         // If item is removed from the cart
         elseif(isset($_POST['removeItem'])) {
@@ -42,14 +36,10 @@
     
             // Remove the item from the shopping cart
             unset($_SESSION['cart'][$itemID]);
-    
-            // Update message
-            $message = "Item removed from cart!";
         }
-        // If order review is confirmed
-        elseif(isset($_POST['confirm'])) {
-            $reviewOrder = true;
-            $orderDetails = $_POST;
+        elseif(isset($_POST['clearCart'])) {
+            // Clear the shopping cart
+            $_SESSION['cart'] = [];
         }
         // If the order is placed
         elseif(isset($_POST['placeOrder'])) {
@@ -58,10 +48,15 @@
             $managerName = $_POST['managerName'];
             $deliveryAddress = $_POST['deliveryAddress'];
             $deliveryDate = $_POST['deliveryDate'];
-
-            // Create the order
             $orderDateTime = date('Y-m-d H:i:s');
-            $sql = "INSERT INTO Orders (purchaseManagerID, orderDateTime, deliveryAddress, deliveryDate) VALUES ('$purchaseManagerID', '$orderDateTime', '$deliveryAddress', '$deliveryDate')";
+
+            // Get the maximum orderID and add 1
+            $result = mysqli_query($conn, "SELECT MAX(orderID) as maxOrderID FROM Orders");
+            $row = mysqli_fetch_assoc($result);
+            $newOrderID = $row['maxOrderID'] + 1;
+
+            // Insert the order into the database
+            $sql = "INSERT INTO Orders (orderID, purchaseManagerID, orderDateTime, deliveryAddress, deliveryDate) VALUES ('$newOrderID', '$purchaseManagerID', '$orderDateTime', '$deliveryAddress', '$deliveryDate')";
             if(mysqli_query($conn, $sql)) {
                 $orderID = mysqli_insert_id($conn); // Get the ID of the newly created order
 
@@ -74,7 +69,7 @@
                     $newStockQty = $item['stockItemQty'] - $orderQty;
 
                     // Create the order item
-                    $sql = "INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES ($orderID, $itemID, $orderQty, $itemPrice)";
+                    $sql = "INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES ($newOrderID, $itemID, $orderQty, $itemPrice)";
                     mysqli_query($conn, $sql);
 
                     // Update the item stock quantity
@@ -99,46 +94,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        /* Some basic CSS for table formatting */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        img {
-            width: 50px;
-            height: 50px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>update Information</title>
+  <script src="https://kit.fontawesome.com/22b529d74e.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="../css/make_order.css">
 </head>
 <body>
-    <a href="../index.php">Back</a>
+  <?php include '../includes/header.php'; ?>
+  <section>
     <h2>Shopping Cart</h2>
     <?php if(!empty($_SESSION['cart'])): ?>
         <table>
             <thead>
                 <tr>
-                    <th>Item ID</th>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
                     <th>Quantity</th>
+                    <th>Total</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($_SESSION['cart'] as $itemID => $qty): ?>
+                <?php 
+                    $totalPrice = 0;
+                    foreach ($_SESSION['cart'] as $itemID => $qty): 
+                        $resultItem = mysqli_query($conn, "SELECT * FROM Item WHERE itemID = $itemID");
+                        $item = mysqli_fetch_assoc($resultItem);
+                        $itemName = $item['itemName'];
+                        $itemImage = $item['ImageFile'];
+                        $itemPrice = $item['price'];
+                        $lineTotal = $itemPrice * $qty;
+                        $totalPrice += $lineTotal;
+                ?>
                 <tr>
-                    <td><?php echo $itemID; ?></td>
+                    <td><img src='../images/<?php echo $itemImage; ?>' alt='<?php echo $itemName; ?>'></td>
+                    <td><?php echo $itemName; ?></td>
+                    <td><?php echo $itemPrice; ?></td>
                     <td>
                         <form method="POST">
                             <input type="hidden" name="updateItemID" value="<?php echo $itemID; ?>">
-                            <input type="number" name="newQty" value="<?php echo $qty; ?>" min="1">
-                            <input type="submit" name="updateQty" value="Update Quantity">
+                            <input type="hidden" name="updateQty" value="1">
+                            <input type="number" name="newQty" value="<?php echo $qty; ?>" min="1" onchange="this.form.submit()">
                         </form>
                     </td>
+                    <td><?php echo $lineTotal; ?></td>
                     <td>
                         <form method="POST">
                             <input type="hidden" name="removeItemID" value="<?php echo $itemID; ?>">
@@ -147,6 +151,11 @@
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <tr>
+                    <td colspan="4">Grand Total</td>
+                    <td><?php echo $totalPrice; ?></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
         <form method="POST">
@@ -154,6 +163,29 @@
         </form>
     <?php else: ?>
         <p>Your cart is empty.</p>
+    <?php endif; ?>
+
+    <?php if(!empty($_SESSION['cart'])): ?>
+        <h2>Confirm Order:</h2>
+        <form method="POST">
+            <!-- Assume that managerName and purchaseManagerID come from the logged-in user -->
+            <input type="hidden" name="purchaseManagerID" value="<?php echo $_SESSION['purchaseManagerID']; ?>">
+            <input type="hidden" name="managerName" value="<?php echo $_SESSION['managerName']; ?>">
+
+            <label for="managerName">Manager Name:</label>
+            <input type="text" id="managerName" name="managerName" value="<?php echo $_SESSION['managerName']; ?>" readonly><br>
+            <label for="deliveryAddress">Delivery Address:</label>
+            <input type="text" id="deliveryAddress" name="deliveryAddress" required><br>
+            <label for="deliveryDate">Delivery Date:</label>
+            <input type="date" id="deliveryDate" name="deliveryDate" required><br>
+            <input type="submit" name="placeOrder" value="Place Order">
+            <?php 
+                // check if there's a message and output a JS alert
+                if (!empty($message)) {
+                    echo '<script type="text/javascript">alert("' . $message . '")</script>';
+                }
+            ?>
+        </form>
     <?php endif; ?>
 
     <h2>Available Products:</h2>
@@ -188,7 +220,7 @@
                     echo "<td>";
                     echo "<form method='POST'>";
                     echo "<input type='hidden' name='itemID' value='".$row["itemID"]."'>";
-                    echo "<input type='number' name='orderQty' min='1' required>";
+                    echo "<input type='number' name='orderQty' min='1' value='1' required> ";
                     echo "<input type='submit' name='addToCart' value='Add to Cart'>";
                     echo "</form>";
                     echo "</td>";
@@ -200,21 +232,7 @@
             ?>
         </tbody>
     </table>
-    
-    <?php if(!empty($_SESSION['cart'])): ?>
-        <h2>Confirm Order:</h2>
-        <form method="POST">
-            <!-- Assume that managerName and purchaseManagerID come from the logged-in user -->
-            <input type="hidden" name="purchaseManagerID" value="<?php echo $_SESSION['purchaseManagerID']; ?>">
-            <input type="hidden" name="managerName" value="<?php echo $_SESSION['managerName']; ?>">
-
-            <label for="deliveryAddress">Delivery Address:</label>
-            <input type="text" id="deliveryAddress" name="deliveryAddress" required><br>
-            <label for="deliveryDate">Delivery Date:</label>
-            <input type="date" id="deliveryDate" name="deliveryDate" required><br>
-            <input type="submit" name="placeOrder" value="Place Order">
-        </form>
-    <?php endif; ?>
+  </section>
+  <?php include '../includes/footer.php'; ?>
 </body>
-
 </html>
