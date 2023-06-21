@@ -51,7 +51,7 @@
         <div class="Title-Login-Icon dropdown">
             <img src="https://gamelet.online/clients/assets/v1/img/none_login_photo.png">
             <div class="dropdown-content">
-                <a href="logout.php">Logout</a>
+                <a href="/ITP4523M_Project_EA/public/logout.php">Logout</a>
             </div>
         </div>
     </div>

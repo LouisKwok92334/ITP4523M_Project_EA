@@ -1,5 +1,6 @@
 <?php
-include '../includes/auth.php';
+    include '../includes/auth.php';
+    require_once("../connection/mysqli_conn.php");
 ?>
 
 <!DOCTYPE html>

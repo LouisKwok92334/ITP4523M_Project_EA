@@ -1,0 +1,22 @@
+#updateInfoForm {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#updateInfoForm label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+#updateInfoForm input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#errorMessage {
+    color: red;
+    margin-bottom: 20px;
+}

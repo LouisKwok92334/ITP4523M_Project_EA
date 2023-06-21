@@ -124,6 +124,5 @@
     </div>
   </div>
   <?php include 'includes/footer.php'; ?>
-  <script src="js/login.js"></script>
 </body>
 </html>

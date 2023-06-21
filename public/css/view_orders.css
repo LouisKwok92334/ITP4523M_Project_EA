@@ -1,0 +1,34 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+  
+table th,
+table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#sort-form {
+    margin-bottom: 20px;
+}
+
+#sort-form label {
+    margin-right: 10px;
+}
+
+#sort-form select {
+    margin-right: 20px;
+}
