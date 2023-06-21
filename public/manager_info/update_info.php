@@ -20,15 +20,24 @@
     <section>
         <form id="updateInfoForm">
             <h2>Update Information</h2>
-            
-            <label for="currentPassword">Current Password:</label>
-            <input type="password" id="currentPassword" name="currentPassword" required>
 
-            <label for="newPassword">New Password:</label>
-            <input type="password" id="newPassword" name="newPassword" required>
+            <div class="password-container">
+                <label for="currentPassword">Current Password:</label>
+                <input type="password" id="currentPassword" name="currentPassword" required>
+                <i class="fa-solid fa-eye-slash password-toggle"></i>
+            </div>
 
-            <label for="confirmPassword">Confirm New Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <div class="password-container">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+                <i class="fa-solid fa-eye-slash password-toggle"></i>
+            </div>
+
+            <div class="password-container">
+                <label for="confirmPassword">Confirm New Password:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                <i class="fa-solid fa-eye-slash password-toggle"></i>
+            </div>
             
             <label for="contactNumber">Contact Number:</label>
             <input type="text" id="contactNumber" name="contactNumber" required>

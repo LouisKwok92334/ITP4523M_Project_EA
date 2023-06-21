@@ -1,8 +1,10 @@
 <?php
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+
     include '../includes/auth_check.php';
     require_once("../connection/mysqli_conn.php");
 
-    session_start();
     $purchaseManagerID = $_SESSION['purchaseManagerID'];
     $currentPassword = $_POST['currentPassword'];
     $newPassword = $_POST['newPassword'];
@@ -23,11 +25,11 @@
             $stmt = mysqli_prepare($conn, $query);
             mysqli_stmt_bind_param($stmt, "ssss", $newPassword, $contactNumber, $warehouseAddress, $purchaseManagerID);
             mysqli_stmt_execute($stmt);
-            echo json_encode(["message" => "Success"]);
+            echo json_encode(["success" => true, "message" => "Success"]);
         } else {
             // 如果当前密码不正确，返回错误消息
             http_response_code(400);
-            echo json_encode(["message" => "Incorrect current password"]);
+            echo json_encode(["success" => false, "error" => "Incorrect current password"]);
         }
     } else {
         http_response_code(404);

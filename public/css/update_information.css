@@ -9,11 +9,23 @@
 }
 
 #updateInfoForm input {
-    width: 100%;
+    width: calc(100% - 30px);
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 20px;
+    top: 53%;
+    transform: translateY(-50%);
+    cursor: pointer;
 }
 
 #errorMessage {
