@@ -241,12 +241,10 @@
         <div class="checkout">
             <div class="confirm-order">
                 <form method="POST">
-                    <!-- Assume that managerName and purchaseManagerID come from the logged-in user -->
-                    <input type="hidden" name="purchaseManagerID" value="<?php echo $_SESSION['purchaseManagerID']; ?>">
-                    <input type="hidden" name="managerName" value="<?php echo $_SESSION['managerName']; ?>">
-
                     <label for="managerName">Manager Name:</label>
                     <input type="text" id="managerName" name="managerName" value="<?php echo $_SESSION['managerName']; ?>" readonly><br>
+                    <label for="purchaseManagerID">Purchase Manager ID:</label>
+                    <input type="text" id="purchaseManagerID" name="purchaseManagerID" value="<?php echo $_SESSION['purchaseManagerID']; ?>" readonly><br>
                     <label for="deliveryAddress">Delivery Address:</label>
                     <input type="text" id="deliveryAddress" name="deliveryAddress" required><br>
                     <label for="deliveryDate">Delivery Date:</label>

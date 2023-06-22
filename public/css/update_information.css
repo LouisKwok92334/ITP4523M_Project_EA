@@ -32,3 +32,15 @@
     color: red;
     margin-bottom: 20px;
 }
+
+.submit {
+    background-color: #1C1F25;
+    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit:hover {
+    background-color: #474747;
+}

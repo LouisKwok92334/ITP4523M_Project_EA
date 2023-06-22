@@ -17,12 +17,10 @@
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/make_order.php">Make Order</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/view_order.php">View Order</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/update_info.php">Update Information</a></li>';
-                      echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/delete_order.php">Delete Order</a></li>';
                     } elseif ($_SESSION['role'] === 'supplier') {
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/insert_item.php">Insert Item</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/edit_item.php">Edit Item</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/generate_report.php">Generate Report</a></li>';
-                      echo '<li><a href="/ITP4523M_Project_EA/public/supplier/delete_item.php">Delete Item</a></li>';
                     }
                 ?>
             </ul>
@@ -38,12 +36,10 @@
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/make_order.php">Make Order</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/view_order.php">View Order</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/update_info.php">Update Information</a></li>';
-                      echo '<li><a href="/ITP4523M_Project_EA/public/manager_info/delete_order.php">Delete Order</a></li>';
                     } elseif ($_SESSION['role'] === 'supplier') {
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/insert_item.php">Insert Item</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/edit_item.php">Edit Item</a></li>';
                       echo '<li><a href="/ITP4523M_Project_EA/public/supplier/generate_report.php">Generate Report</a></li>';
-                      echo '<li><a href="/ITP4523M_Project_EA/public/supplier/delete_item.php">Delete Item</a></li>';
                     }
                 ?>
             </ul>

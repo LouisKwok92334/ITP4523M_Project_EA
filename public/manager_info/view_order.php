@@ -57,12 +57,21 @@
           <th>Item Name</th>
           <th>Order Quantity</th>
           <th>Total Order Amount</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
     </table>
   </section>
+  <div id="delete-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Are you sure you want to delete this order?</p>
+      <button id="confirm-delete">Confirm</button>
+      <button id="cancel-delete">Cancel</button>
+    </div>
+  </div>
   <?php include '../includes/footer.php'; ?>
   <script src="../js/view_orders.js"></script>
 </body>

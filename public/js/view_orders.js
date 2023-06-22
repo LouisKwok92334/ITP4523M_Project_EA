@@ -1,4 +1,42 @@
 let orders = [];
+let modal = document.querySelector('#delete-modal');
+let closeButton = document.querySelector('.close');
+let confirmDeleteButton = document.querySelector('#confirm-delete');
+let cancelDeleteButton = document.querySelector('#cancel-delete');
+
+closeButton.onclick = function() {
+    modal.style.display = "none";
+}
+
+confirmDeleteButton.onclick = async function() {
+    // Call the delete_order.php script
+    let response = await fetch('../includes/delete_order.php', {
+        method: 'POST',
+        body: JSON.stringify({orderID: modal.dataset.orderId, itemID: modal.dataset.itemId})  // Updated
+    });
+
+    if (response.ok) {
+        let res = await response.json();
+        if (res.status === 'success') {
+          // Add an alert message
+          alert('Order deleted successfully!');
+          // Reload orders
+          await loadOrder();
+        } else {
+          alert('Failed to delete order: ' + res.error);
+        }
+    } else {
+        let error = await response.json();
+        alert('Failed to delete order: ' + error.error);
+    }
+  
+    modal.style.display = "none";
+}
+  
+// When the user clicks on Cancel, close the modal
+cancelDeleteButton.onclick = function() {
+    modal.style.display = "none";
+}
 
 async function loadOrder() {
   const res = await fetch('../includes/get_orders.php');
@@ -13,32 +51,57 @@ async function loadOrder() {
 }
 
 function displayOrders(orders) {
-  let tableBody = document.querySelector("#orderTable tbody");
+    let tableBody = document.querySelector("#orderTable tbody");
+    
+    // 清空现有的行
+    tableBody.innerHTML = "";
   
-  // 清空现有的行
-  tableBody.innerHTML = "";
-
-  orders.forEach(order => {
-    let row = document.createElement('tr');
-
-    Object.entries(order).forEach(([key, value]) => {
-      let cell = document.createElement('td');
-
-      if (key === 'ImageFile') {
-        let img = document.createElement('img');
-        img.src = "../images/" + value;
-        img.alt = 'Item Image';
-        img.style.width = '50px'; // Set a suitable width
-        cell.appendChild(img);
-      } else {
-        cell.textContent = value;
+    orders.forEach(order => {
+      let row = document.createElement('tr');
+  
+      Object.entries(order).forEach(([key, value]) => {
+        let cell = document.createElement('td');
+  
+        if (key === 'ImageFile') {
+          let img = document.createElement('img');
+          img.src = "../images/" + value;
+          img.alt = 'Item Image';
+          img.style.width = '50px'; // Set a suitable width
+          cell.appendChild(img);
+        } else {
+          cell.textContent = value;
+        }
+        
+        row.appendChild(cell);
+      });
+  
+      // Add a Delete button
+      let deleteCell = document.createElement('td');
+      let deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.className = 'delete-button';
+  
+      // Check if order is within two days of delivery
+      let deliveryDate = new Date(order.deliveryDate);
+      let now = new Date();
+      let twoDays = 2 * 24 * 60 * 60 * 1000;  // two days in milliseconds
+      let nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      if ((deliveryDate - nowDateOnly) <= twoDays) {
+        deleteButton.disabled = true;
       }
-      
-      row.appendChild(cell);
+  
+      deleteButton.addEventListener('click', function() {
+        document.querySelector('#delete-modal').style.display = 'block';
+        // Store the order ID and item ID in the modal
+        modal.dataset.orderId = order.orderID;
+        modal.dataset.itemId = order.itemID;  // Updated
     });
-
-    tableBody.appendChild(row);
-  });
+  
+      deleteCell.appendChild(deleteButton);
+      row.appendChild(deleteCell);
+  
+      tableBody.appendChild(row);
+    });
 }
 
 function sortOrders() {

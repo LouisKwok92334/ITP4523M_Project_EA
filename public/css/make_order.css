@@ -107,7 +107,7 @@ th, td {
 }
 .confirm-order {
   background-color: #e0e0e0;
-  height: 100px;
+  height: 130px;
 }
 .active .card {
   left: calc(100% - 500px);
@@ -183,6 +183,9 @@ th, td {
   width: 30%;
   cursor: pointer;
 }
+.addToCart:hover{
+  background-color: #474747;
+}
 .clear-Cart{
   background-color: #1C1F25;
   color: #FFFFFF;
@@ -223,6 +226,7 @@ th, td {
 
 .details-btn {
   color: white;
+  background-color: rgba(0,0,0,0.5);
   font-size: 16px;
   padding: 10px 20px;
   border: none;

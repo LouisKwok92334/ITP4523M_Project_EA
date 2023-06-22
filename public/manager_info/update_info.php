@@ -46,7 +46,7 @@
             <input type="text" id="warehouseAddress" name="warehouseAddress" required>
 
             <div id="errorMessage"></div>
-            <button type="submit">Submit</button>
+            <button class="submit" type="submit">Submit</button>
         </form>
     </section>
   <?php include '../includes/footer.php'; ?>

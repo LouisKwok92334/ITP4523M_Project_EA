@@ -55,7 +55,7 @@ document.getElementById('updateInfoForm').addEventListener('submit', async funct
 });
   
 async function loadCurrentInfo() {
-    const res = await fetch('../includes/get_manager_info.php');
+    const res = await fetch('../includes/get_manager_info.php', { method: 'GET' });
     const data = await res.json();
 
     document.getElementById('contactNumber').value = data.contactNumber;
@@ -63,3 +63,13 @@ async function loadCurrentInfo() {
 }
 
 loadCurrentInfo();
+
+document.querySelectorAll('.password-toggle').forEach(function(toggle) {
+    toggle.addEventListener('click', function() {
+      const passwordInput = this.previousElementSibling;
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+});
