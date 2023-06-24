@@ -142,6 +142,7 @@
   <link rel="stylesheet" type="text/css" href="../css/navbar.css">
   <link rel="stylesheet" type="text/css" href="../css/modal.css">
   <link rel="stylesheet" type="text/css" href="../css/make_order.css">
+  <link rel="shortcut icon" href="../images/Logo3.png" type="image/x-icon">
 </head>
 <body>
   <?php include '../includes/header.php'; ?>

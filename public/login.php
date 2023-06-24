@@ -24,6 +24,7 @@
     if ($user) {
       $_SESSION['loggedin'] = true;
       $_SESSION['role'] = 'supplier';
+      $_SESSION['supplierID'] = $user['supplierID'];
       header('Location: index.php');
       exit;
     } else {
@@ -67,6 +68,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/login.css" />
   <link rel="stylesheet" type="text/css" href="css/navbar.css">
+  <link rel="shortcut icon" href="./images/Logo3.png" type="image/x-icon">
 </head>
 <body>
   <div class="wrapper">

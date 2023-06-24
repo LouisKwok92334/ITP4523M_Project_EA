@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="../css/navbar.css">
   <link rel="stylesheet" type="text/css" href="../css/update_information.css">
+  <link rel="shortcut icon" href="../images/Logo3.png" type="image/x-icon">
 </head>
 <body>
   <?php include '../includes/header.php'; ?>
