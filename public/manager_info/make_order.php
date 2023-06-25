@@ -229,19 +229,34 @@
             <div class="list-card">
                 <?php 
                     $totalPrice = 0;
-                    foreach ($_SESSION['cart'] as $itemID => $qty): 
+                    foreach ($_SESSION['cart'] as $itemID => $qty):
                         $resultItem = mysqli_query($conn, "SELECT * FROM Item WHERE itemID = $itemID");
                         $item = mysqli_fetch_assoc($resultItem);
                         $itemName = $item['itemName'];
                         $itemImage = $item['ImageFile'];
                         $itemPrice = $item['price'];
                         $lineTotal = $itemPrice * $qty;
-                        $totalPrice += $lineTotal;
+
+                        // Calculate the discount
+                        $discountRate = 0;
+                        if ($lineTotal >= 10000) {
+                            $discountRate = 0.13;
+                        } elseif ($lineTotal >= 5000) {
+                            $discountRate = 0.06;
+                        } elseif ($lineTotal >= 3000) {
+                            $discountRate = 0.03;
+                        }
+
+                        $lineDiscountAmount = $lineTotal * $discountRate;
+                        $lineFinalTotal = $lineTotal - $lineDiscountAmount;
+
+                        // Update the totalPrice with the discounted lineTotal
+                        $totalPrice += $lineFinalTotal;
                 ?>
                 <li>
                     <div><img src='../images/<?php echo $itemImage; ?>' alt='<?php echo $itemName; ?>'></div>
                     <div><?php echo $itemName; ?></div>
-                    <div>$ <?php echo number_format($lineTotal, 2); ?></div>
+                    <div>$ <?php echo number_format($lineFinalTotal, 2); ?></div>
                     <form method="POST">
                         <button class="button-trash" type="submit" name="removeItem" value="">
                             <input type="hidden" name="removeItemID" value="<?php echo $itemID; ?>">
