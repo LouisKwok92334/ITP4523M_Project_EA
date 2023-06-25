@@ -120,3 +120,20 @@
   button#delete-btn:hover {
     background-color: #da190b;
   }
+  .message {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    z-index: 1000; /* Make sure the message is on top of other elements */
+  }
+  
+  .success-message {
+    background-color: green;
+  }
+  
+  .error-message {
+    background-color: red;
+  }

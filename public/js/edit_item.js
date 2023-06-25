@@ -24,11 +24,16 @@ async function fetchItems() {
   const cancelBtn = document.getElementById('cancel-btn');
   const updateBtn = document.getElementById('update-btn');
   const deleteBtn = document.getElementById('delete-btn');
+  const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+  const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+  const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
   
   let selectedItem;
   
   function populateTable(items) {
     const tbody = itemTable.querySelector('tbody');
+    tbody.innerHTML = '';
+    
     items.forEach(item => {
       const row = document.createElement('tr');
       row.innerHTML= `
@@ -104,27 +109,66 @@ async function updateItem(e) {
     console.error('Error updating item:', error);
   }
 }
+
+function displayMessage(message, isError = false) {
+  const messageElem = document.createElement('div');
+  messageElem.textContent = message;
+  messageElem.classList.add('message');
+  messageElem.classList.add(isError ? 'error-message' : 'success-message');
+
+  document.body.appendChild(messageElem);
+
+  setTimeout(() => {
+    messageElem.remove();
+  }, 3000);
+}
+
   
-  async function deleteItem() {
-    try {
-      const response = await fetch(`../includes/delete_item.php?itemID=${selectedItem.itemID}`, {
-        method: 'GET',
-      });
-  
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-  
-      closeEditModal();
-      fetchItems();
-    } catch (error) {
-      console.error('Error deleting item:', error);
+async function deleteItem() {
+  try {
+    const response = await fetch(`../includes/delete_item.php?itemID=${selectedItem.itemID}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
+
+    const data = await response.text();
+    console.log('Server response:', data); // Add this line to debug
+
+    if (data === "Item deleted.") {
+      displayMessage("Item deleted successfully.");
+      // Update UI, e.g., remove the element of the deleted item
+    } else if (data === "Cannot delete item with existing related orders.") {
+      displayMessage("Cannot delete item with existing related orders.", true);
+    } else {
+      displayMessage("Error: Item not deleted", true);
+    }
+
+    deleteConfirmModal.style.display = 'none';
+    closeEditModal();
+    fetchItems();
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    displayMessage("Error: Item not deleted", true);
   }
+}
   
-  editForm.addEventListener('submit', updateItem);
+  updateBtn.addEventListener('click', updateItem);
   cancelBtn.addEventListener('click', closeEditModal);
-  deleteBtn.addEventListener('click', deleteItem);
+  deleteBtn.addEventListener('click', () => {
+    deleteConfirmModal.style.display = 'block';
+  });
   closeModal.addEventListener('click', closeEditModal);
+  confirmDeleteBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    deleteItem();
+  });
+  
+  cancelDeleteBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    deleteConfirmModal.style.display = 'none';
+  });
 
   fetchItems();

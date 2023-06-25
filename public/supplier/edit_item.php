@@ -70,6 +70,14 @@
             <button type="button" id="cancel-btn">Cancel</button>
             <button type="submit" id="update-btn">Update Item</button>
             <button type="button" id="delete-btn">Delete Item</button>
+            <div id="delete-confirm-modal" class="modal">
+              <div class="modal-content">
+                <h2>Confirm Delete</h2>
+                <p>Are you sure you want to delete this item?</p>
+                <button id="confirm-delete-btn" class="delete-btn">Yes, delete it</button>
+                <button id="cancel-delete-btn" class="cancel-btn">Cancel</button>
+              </div>
+            </div>
           </form>
         </div>
       </div>

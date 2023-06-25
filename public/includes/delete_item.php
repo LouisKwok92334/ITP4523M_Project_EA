@@ -4,17 +4,30 @@ require_once("../connection/mysqli_conn.php");
 
 $itemID = isset($_GET['itemID']) ? $_GET['itemID'] : die();
 
-$query = "DELETE FROM items WHERE itemID=?";
+// Check if there are any related orders for the given itemID
+$query_orders = "SELECT * FROM OrdersItem WHERE itemID=?";
+$stmt_orders = $conn->prepare($query_orders);
+$stmt_orders->bind_param('i', $itemID);
+$stmt_orders->execute();
+$result_orders = $stmt_orders->get_result();
 
-$stmt = $conn->prepare($query);
-$stmt->bind_param('i', $itemID);
+// If there are no related orders, proceed with deleting the item
+if ($result_orders->num_rows === 0) {
+    $query_delete = "DELETE FROM item WHERE itemID=?";
+    $stmt_delete = $conn->prepare($query_delete);
+    $stmt_delete->bind_param('i', $itemID);
 
-if ($stmt->execute()) {
-    echo "Item deleted.";
+    if ($stmt_delete->execute()) {
+        echo "Item deleted.";
+    } else {
+        echo "Item not deleted.";
+    }
+
+    $stmt_delete->close();
 } else {
-    echo "Item not deleted.";
+    echo "Cannot delete item with existing related orders.";
 }
 
-$stmt->close();
+$stmt_orders->close();
 $conn->close();
 ?>
