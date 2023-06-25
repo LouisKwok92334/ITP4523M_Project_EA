@@ -236,27 +236,26 @@
                         $itemImage = $item['ImageFile'];
                         $itemPrice = $item['price'];
                         $lineTotal = $itemPrice * $qty;
+                        $totalPrice += $lineTotal;
 
-                        // Calculate the discount
-                        $discountRate = 0;
-                        if ($lineTotal >= 10000) {
-                            $discountRate = 0.13;
-                        } elseif ($lineTotal >= 5000) {
-                            $discountRate = 0.06;
-                        } elseif ($lineTotal >= 3000) {
-                            $discountRate = 0.03;
-                        }
+                    // Calculate the discount
+                    $discountRate = 0;
+                    if ($totalPrice >= 10000) {
+                        $discountRate = 0.13;
+                    } elseif ($totalPrice >= 5000) {
+                        $discountRate = 0.06;
+                    } elseif ($totalPrice >= 3000) {
+                        $discountRate = 0.03;
+                    }
 
-                        $lineDiscountAmount = $lineTotal * $discountRate;
-                        $lineFinalTotal = $lineTotal - $lineDiscountAmount;
-
-                        // Update the totalPrice with the discounted lineTotal
-                        $totalPrice += $lineFinalTotal;
+                    $discountAmount = $totalPrice * $discountRate;
+                    $finalTotal = $totalPrice - $discountAmount;
+                    $totalPrice = $finalTotal;
                 ?>
                 <li>
                     <div><img src='../images/<?php echo $itemImage; ?>' alt='<?php echo $itemName; ?>'></div>
                     <div><?php echo $itemName; ?></div>
-                    <div>$ <?php echo number_format($lineFinalTotal, 2); ?></div>
+                    <div>$ <?php echo number_format($lineTotal, 2); ?></div>
                     <form method="POST">
                         <button class="button-trash" type="submit" name="removeItem" value="">
                             <input type="hidden" name="removeItemID" value="<?php echo $itemID; ?>">
