@@ -127,7 +127,7 @@
     padding: 10px;
     color: white;
     border-radius: 5px;
-    z-index: 1000; /* Make sure the message is on top of other elements */
+    z-index: 1000;
   }
   
   .success-message {

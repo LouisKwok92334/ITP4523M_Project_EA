@@ -19,7 +19,23 @@
 <body>
   <?php include '../includes/header.php'; ?>
   <section>
-   
+  <div class="container">
+      <h1>Report</h1>
+      <table id="report-table">
+        <thead>
+          <tr>
+            <th>Item ID</th>
+            <th>Item Name</th>
+            <th>Item Image</th>
+            <th>Total Number for Each Order Item</th>
+            <th>Total Sales Amount ($)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Report data will be added here using JavaScript -->
+        </tbody>
+      </table>
+    </div>
   </section>
   <?php include '../includes/footer.php'; ?>
   <script src="../js/generate_report.js"></script>
