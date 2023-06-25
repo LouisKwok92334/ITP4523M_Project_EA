@@ -2,20 +2,20 @@ async function fetchReportData() {
     const response = await fetch('../includes/fetchData.php');
     const data = await response.json();
     const { items, orders } = data;
-
-    const reportData = items.map(item => {
-    const itemOrders = orders.filter(order => order.itemID === item.itemID);
-    const totalNumber = itemOrders.reduce((acc, order) => acc + parseInt(order.orderQty, 10), 0);
-    const totalSalesAmount = totalNumber * item.price;
-
-    return {
-    id: item.itemID,
-    name: item.itemName,
-    imageUrl: '../images/' + item.ImageFile,
-    totalNumber: totalNumber,
-    totalSalesAmount: totalSalesAmount.toFixed(2)
-    };
-});
+  
+    const reportData = items.map((item) => {
+      const itemOrders = orders.filter((order) => order.itemID === item.itemID);
+      const totalNumber = itemOrders.reduce((acc, order) => acc + parseInt(order.orderQty, 10), 0);
+      const totalSalesAmount = itemOrders.reduce((acc, order) => acc + (parseInt(order.orderQty, 10) * parseFloat(order.itemPrice)), 0);
+  
+      return {
+        id: item.itemID,
+        name: item.itemName,
+        imageUrl: '../images/' + item.ImageFile,
+        totalNumber: totalNumber,
+        totalSalesAmount: totalSalesAmount.toFixed(2),
+      };
+    });
   
     return reportData;
   }

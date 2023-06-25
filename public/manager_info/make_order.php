@@ -84,6 +84,12 @@
             $deliveryDate = $_POST['deliveryDate'];
             $orderDateTime = date('Y-m-d H:i:s');
 
+            // Calculate the total order amount
+            $totalOrderAmount = 0;
+            foreach ($_SESSION['cart'] as $itemID => $orderQty) {
+                $totalOrderAmount += $_SESSION['items'][$itemID]['price'] * $orderQty;
+            }
+
             // Get the maximum orderID and add 1
             $result = mysqli_query($conn, "SELECT MAX(orderID) as maxOrderID FROM Orders");
             $row = mysqli_fetch_assoc($result);
@@ -103,8 +109,15 @@
                 $itemPrice = $item['price'];
                 $newStockQty = $item['stockItemQty'] - $orderQty;
 
+                // 在此处添加代码以计算折扣信息
+                $discountInfo = callDiscountCalculatorAPI($totalOrderAmount);
+                $discountRate = $discountInfo['DiscountRate'];
+                $totalDiscountAmount = $totalOrderAmount * $discountRate;
+                $discountPerItem = $totalDiscountAmount / $orderQty;
+                $discountedItemPrice = $itemPrice - $discountPerItem;
+
                 // Create the order item
-                $sql = "INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES ($newOrderID, $itemID, $orderQty, $itemPrice)";
+                $sql = "INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES ($newOrderID, $itemID, $orderQty, $discountedItemPrice)";
                 mysqli_query($conn, $sql);
 
                 // Update the item stock quantity
@@ -124,6 +137,25 @@
             header("Location: ".$_SERVER['PHP_SELF']);
             exit();
         }
+    }
+
+    function callDiscountCalculatorAPI($totalOrderAmount) {
+        $url = "http://localhost:8000/api/discountCalculator?TotalOrderAmount=" . urlencode($totalOrderAmount);
+        $ch = curl_init($url);
+    
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+    
+        if (curl_errno($ch)) {
+            // Handle error
+            return [
+                'error' => curl_error($ch),
+            ];
+        }
+    
+        curl_close($ch);
+    
+        return json_decode($response, true);
     }
 
     // Reset the result cursor

@@ -25,8 +25,15 @@
       $_SESSION['loggedin'] = true;
       $_SESSION['role'] = 'supplier';
       $_SESSION['supplierID'] = $user['supplierID'];
-      header('Location: index.php');
-      exit;
+
+    if (isset($_POST['remember'])) {
+        setcookie('username', $username, time() + 60 * 60 * 24 * 30);
+    }
+    
+    $_SESSION['messageType'] = 'success';
+    $_SESSION['messageContent'] = 'Welcome Yummy Restaurant ^__^';
+    
+    $_SESSION['shouldRedirect'] = true;  // Set the flag
     } else {
       // Check if user is a purchase manager
       $result = mysqli_query($conn, "SELECT * FROM PurchaseManager WHERE purchaseManagerID = '$username' AND password = '$password'");
@@ -46,9 +53,6 @@
         $_SESSION['messageContent'] = 'Welcome Yummy Restaurant ^__^';
         
         $_SESSION['shouldRedirect'] = true;  // Set the flag
-    
-        header('Location: login.php');
-        exit;
     } else {
           // Incorrect login
           $_SESSION['messageType'] = 'error';
@@ -111,7 +115,6 @@
                 </script>
                 <?php 
                 endif;
-
                 // Remove the message from the session
                 unset($_SESSION['messageType']);
                 unset($_SESSION['messageContent']);
