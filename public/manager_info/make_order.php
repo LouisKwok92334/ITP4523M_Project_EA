@@ -112,9 +112,9 @@
                 // 在此处添加代码以计算折扣信息
                 $discountInfo = callDiscountCalculatorAPI($totalOrderAmount);
                 $discountRate = $discountInfo['DiscountRate'];
-                $totalDiscountAmount = $totalOrderAmount * $discountRate;
-                $discountPerItem = $totalDiscountAmount / $orderQty;
-                $discountedItemPrice = $itemPrice - $discountPerItem;
+                $itemTotalAmount = $itemPrice * $orderQty;
+                $itemDiscountAmount = $itemTotalAmount * $discountRate;
+                $discountedItemPrice = $itemPrice - ($itemDiscountAmount / $orderQty);
 
                 // Create the order item
                 $sql = "INSERT INTO OrdersItem (orderID, itemID, orderQty, itemPrice) VALUES ($newOrderID, $itemID, $orderQty, $discountedItemPrice)";
